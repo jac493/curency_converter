@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ForexDash | Muhire Jacques</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --accent: #fbbf24;
+            --bg: #f1f5f9;
+            --sidebar: #0f172a;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+        }
+
+        /* Global Reset */
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { margin: 0; background-color: var(--bg); color: var(--text-dark); overflow-x: hidden; }
+
+        .app-container { display: flex; min-height: 100vh; }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            color: white; padding: 2.5rem 1.5rem;
+            display: flex; flex-direction: column;
+            position: sticky; top: 0; height: 100vh;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+        }
+
+        .sidebar-header h2 { font-size: 1.7rem; color: var(--accent); margin: 0; letter-spacing: -1px; }
+        .sidebar-header p { font-size: 0.75rem; color: #94a3b8; margin-bottom: 2.5rem; }
+
+        nav { flex-grow: 1; }
+        nav button {
+            width: 100%; padding: 15px 20px; margin-bottom: 12px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            color: #94a3b8; text-align: left; cursor: pointer; border-radius: 14px;
+            font-weight: 600; display: flex; align-items: center; gap: 15px; transition: 0.4s;
+        }
+
+        nav button i { font-size: 1.2rem; }
+        nav button:hover { background: rgba(255,255,255,0.1); color: white; transform: translateX(8px); }
+        nav button.active { background: var(--primary); color: white; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4); }
+        nav button.active i { color: var(--accent); }
+
+        /* Main Content */
+        .main-content { flex: 1; padding: 3rem; display: flex; flex-direction: column; align-items: center; }
+        
+        .panel { 
+            width: 100%; max-width: 850px; background: var(--card-bg); padding: 3rem; 
+            border-radius: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08);
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hidden { display: none; }
+
+        /* Dropdown & Input Improvements */
+        .input-group { margin-bottom: 2rem; }
+        .input-group label { display: block; font-size: 0.8rem; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 10px; }
+        
+        input[type="number"], select {
+            width: 100%; padding: 18px; font-size: 1.1rem; font-weight: 700;
+            border: 2px solid #e2e8f0; border-radius: 16px; outline: none;
+            background-color: #f8fafc; transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 5px var(--primary-light);
+        }
+
+        .selection-row { display: grid; grid-template-columns: 1fr 60px 1fr; gap: 15px; align-items: center; margin-bottom: 2.5rem; }
+        
+        .swap-btn {
+            width: 55px; height: 55px; background: var(--primary); color: white; border-radius: 50%;
+            border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; transition: 0.4s; box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3);
+        }
+        .swap-btn:hover { transform: rotate(180deg) scale(1.1); background: #1e293b; }
+
+        /* Result Area */
+        .result-box { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 3rem; border-radius: 24px; text-align: center; color: white;
+            box-shadow: 0 20px 30px rgba(15, 23, 42, 0.2);
+        }
+        .result-amount { font-size: 3.2rem; font-weight: 800; color: var(--accent); }
+        #timestamp { font-size: 0.85rem; color: #94a3b8; margin-top: 15px; }
+
+        /* Dev Card */
+        .dev-card { 
+            display: flex; align-items: center; gap: 20px; background: #f8fafc; 
+            padding: 25px; border-radius: 24px; border: 1px solid #e2e8f0; margin-top: 20px;
+        }
+        .dev-card img { 
+            width: 100px; height: 100px; border-radius: 50%; object-fit: cover; 
+            border: 4px solid var(--primary); box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 900px) {
+            .app-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; padding: 1.5rem; }
+            .selection-row { grid-template-columns: 1fr; }
+            .swap-btn { transform: rotate(90deg); margin: 0 auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>ForexDash</h2>
+            <p>Built by Muhire Jacques</p>
+        </div>
+
+        <nav>
+            <button id="nav-convert" class="active"><i class="fa-solid fa-house"></i> Converter</button>
+            <button id="nav-history"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+            <button id="nav-about"><i class="fa-solid fa-user-graduate"></i> Developer</button>
+        </nav>
+
+        <div style="display: flex; gap: 20px; justify-content: center; margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <a href="https://github.com/jac493" target="_blank" style="color: #94a3b8; font-size: 1.6rem;"><i class="fa-brands fa-github"></i></a>
+            <a href="https://instagram.com/_its_real_jac_" target="_blank" style="color: #94a3b8; font-size: 1.6rem;"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <section id="convert-section" class="panel">
+            <h1><i class="fa-solid fa-circle-dollar-to-slot" style="color: var(--primary);"></i> Global Exchange</h1>
+            
+            <div class="input-group">
+                <label>Amount to Convert</label>
+                <input id="amount" type="number" value="1.00" step="any" />
+            </div>
+
+            <div class="selection-row">
+                <select id="from-currency"></select>
+                <button class="swap-btn" id="swap-btn"><i class="fa-solid fa-repeat"></i></button>
+                <select id="to-currency"></select>
+            </div>
+
+            <div class="result-box">
+                <div class="result-amount" id="result">0.00</div>
+                <div id="timestamp">Connecting to live markets...</div>
+            </div>
+        </section>
+
+        <section id="history-section" class="panel hidden">
+            <h1><i class="fa-solid fa-list-check"></i> Conversion Log</h1>
+            <ul id="history-list" style="list-style: none; padding: 0;"></ul>
+            <button onclick="document.getElementById('history-list').innerHTML=''" style="color: #ef4444; border:none; background:none; cursor:pointer; font-weight:700; margin-top: 20px;">
+                <i class="fa-solid fa-trash"></i> CLEAR ALL
+            </button>
+        </section>
+
+        <section id="about-section" class="panel hidden">
+            <h1><i class="fa-solid fa-graduation-cap"></i> Student Developer</h1>
+            <div class="dev-card">
+                <img src="real.jpg" alt="Muhire Jacques" onerror="this.src='https://ui-avatars.com/api/?name=Muhire+Jacques&background=2563eb&color=fff'">
+                <div>
+                    <h3 style="margin:0; font-size: 1.5rem;">Muhire Jacques</h3>
+                    <p style="margin:5px 0; font-weight: 700; color: var(--primary);">Web Developer | Student</p>
+                    <p style="margin:0; color: var(--text-light); font-size: 0.9rem;">Mubuga TSS</p>
+                </div>
+            </div>
+            <p style="margin-top:25px; line-height:1.8; color: var(--text-light);">
+                Hello! I am a student developer focused on building modern, user-friendly web applications. This project is a real-time currency dashboard that connects to the <strong>Frankfurter API</strong> to provide accurate financial data.
+            </p>
+        </section>
+    </main>
+</div>
+
+<script>
+    const fromCurrency = document.getElementById('from-currency');
+    const toCurrency = document.getElementById('to-currency');
+    const amountInput = document.getElementById('amount');
+    const resultDiv = document.getElementById('result');
+    const timestampP = document.getElementById('timestamp');
+    const historyList = document.getElementById('history-list');
+
+    // 30 Most Common Currencies Organized
+    const commonCurrencies = [
+        "USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "HKD", "NZD",
+        "SEK", "KRW", "SGD", "NOK", "MXN", "INR", "RUB", "ZAR", "TRY", "BRL",
+        "TWD", "DKK", "PLN", "THB", "IDR", "HUF", "CZK", "ILS", "CLP", "PHP"
+    ].sort();
+
+    async function init() {
+        try {
+            const res = await fetch('https://api.frankfurter.app/currencies');
+            const data = await res.json();
+            
+            // 1. Add Prioritized 30 Currencies first
+            commonCurrencies.forEach(code => {
+                if(data[code]) {
+                    fromCurrency.add(new Option(`${code} - ${data[code]}`, code));
+                    toCurrency.add(new Option(`${code} - ${data[code]}`, code));
+                }
+            });
+
+            // 2. Add any remaining currencies alphabetically
+            Object.keys(data).sort().forEach(code => {
+                if(!commonCurrencies.includes(code)) {
+                    fromCurrency.add(new Option(`${code} - ${data[code]}`, code));
+                    toCurrency.add(new Option(`${code} - ${data[code]}`, code));
+                }
+            });
+
+            fromCurrency.value = 'USD';
+            toCurrency.value = 'EUR';
+            convert();
+        } catch (e) { resultDiv.innerText = "Offline"; }
+    }
+
+    async function convert() {
+        const from = fromCurrency.value;
+        const to = toCurrency.value;
+        const amt = amountInput.value;
+        if (!amt || amt <= 0) { resultDiv.innerText = "0.00"; return; }
+        if (from === to) { resultDiv.innerText = `${parseFloat(amt).toFixed(2)} ${to}`; return; }
+
+        try {
+            const res = await fetch(`https://api.frankfurter.app/latest?amount=${amt}&from=${from}&to=${to}`);
+            const data = await res.json();
+            const val = data.rates[to].toFixed(2);
+            resultDiv.innerText = `${val} ${to}`;
+            timestampP.innerHTML = `<i class="fa-solid fa-clock"></i> Live Rate: 1 ${from} = ${(data.rates[to]/amt).toFixed(4)} ${to}`;
+            
+            addLog(amt, from, val, to);
+        } catch (e) { console.error("API error"); }
+    }
+
+    function addLog(a, f, v, t) {
+        const li = document.createElement('li');
+        li.style.cssText = "padding:15px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; font-weight:700;";
+        li.innerHTML = `<span>${a} ${f}</span> <i class="fa-solid fa-chevron-right" style="color:var(--text-light); font-size:0.8rem"></i> <span>${v} ${t}</span>`;
+        if (historyList.children.length > 5) historyList.lastChild.remove();
+        historyList.prepend(li);
+    }
+
+    // Event Listeners
+    document.getElementById('swap-btn').addEventListener('click', () => {
+        const temp = fromCurrency.value;
+        fromCurrency.value = toCurrency.value;
+        toCurrency.value = temp;
+        convert();
+    });
+
+    [amountInput, fromCurrency, toCurrency].forEach(el => el.addEventListener('input', convert));
+
+    // Nav Logic
+    document.querySelectorAll('nav button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`${btn.id.split('-')[1]}-section`).classList.remove('hidden');
+        });
+    });
+
+    init();
+</script>
+</body>
+</html>
